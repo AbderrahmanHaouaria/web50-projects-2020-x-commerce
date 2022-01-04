@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2 style="margin-bottom: 30px;">Your Watchlist:</h2>
+
+    <ul>
+        {% for listing in listings %}
+            <div class="card mb-5" style="position: relative; margin-left: -30px;">
+                <img src="{{ listing.image }}" class="card-img-top" alt="what" style="width: 20%;">
+                <div class="card-body">
+                    <h5 class="card-title"><a style="text-decoration: none;" href="{% url 'auctions:listing' listing.id %}">{{ listing.title }}</a></h5>
+                    {% if not highest_price %}
+                        <h6 class="card-title"><strong>Price:</strong> ${{ listing.starting_bid }}</h6>
+                    {% else %}
+                        <h6 class="card-title"><strong>Price:</strong> ${{ highest_price }}</h6>
+                    {% endif %}
+                    <p class="card-text"><small class="text-muted">{{ listing.category }}</small></p>
+                </div>
+            </div>
+        {% empty %}
+            <center><h1>No listings.</h1></center>
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}
