@@ -1,9 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import AnonymousUser
 from django.db import IntegrityError
-from django.forms import widgets
 from django.forms.widgets import HiddenInput, Input
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from .models import Comment, User, Listing, Bid
@@ -94,9 +92,9 @@ def listing(request, listingID):
     visitor = request.user
 
     if listing.bid_set.last() is not None:
-        highest_price = float(listing.bid_set.last().bid)
+        highest_price = float(listing.bid_set.last().bid) #####
     else:
-        highest_price = float(listing.starting_bid)
+        highest_price = float(listing.starting_bid) #####
 
     class BidForm(forms.ModelForm):
         class Meta:
@@ -125,7 +123,7 @@ def listing(request, listingID):
         form = BidForm(request.POST)
         if form.is_valid:
             form.save()
-            highest_price = form.cleaned_data["bid"]
+            highest_price = form.cleaned_data["bid"] #####
             return HttpResponseRedirect(f"{listingID}")
         else:
             return render(request, "auctions/listing.html", {
@@ -135,17 +133,19 @@ def listing(request, listingID):
         form = CommentForm(request.POST)
         if form.is_valid:
             form.save()
-        else:
             return HttpResponseRedirect(f"{listingID}")
+        else:
+            return render(request, "auctions/listing.html", {
+                "form": form
+            })
 
     if visitor == owner:
         return render(request, "auctions/listing.html", {
         "listing": listing,
-        "form": BidForm(initial={"listing": listing, "user": visitor}),
-        "comment": CommentForm(initial={"listing": listing, "user": visitor}),
+        # "form": BidForm(initial={"listing": listing, "user": visitor}),
+        # "comment": CommentForm(initial={"listing": listing, "user": visitor}),
         "highest_price": format(highest_price, ".2f"),
-        "user_watchlist": visitor.watchlisted.all(),
-        "owner": owner
+        "user_watchlist": visitor.watchlisted.all()
         })
     elif visitor.is_authenticated:
         return render(request, "auctions/listing.html", {

@@ -11,7 +11,7 @@
                 <p class="card-text"><small class="text-muted">{{ listing.category }}</small></p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
                     {% if listing.active %}
-                        {% if owner %}
+                        {% if user == listing.user %}
                             <form action="" method="post">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-primary btn-lg px-4 me-md-2 fw-bold">Close Auction</button>
@@ -39,7 +39,7 @@
 
 
 
-    {% if listing.active and user.is_authenticated and not owner%}
+    {% if listing.active and user.is_authenticated and user != listing.user %}
         <form id="bid-section" action="" method="post">
             {% csrf_token %}
             <div class="input-group">
